@@ -10,12 +10,12 @@
 
 **Purpose**: Monorepo initialization and workspace structure
 
-- [ ] T001 Initialize npm monorepo root with workspaces configuration in `package.json`
-- [ ] T002 [P] Configure TypeScript root configuration and base compiler settings in `tsconfig.base.json`
-- [ ] T003 [P] Configure shared linting and formatting rules in `.prettierrc` and `eslint.config.js`
-- [ ] T004 [P] Initialize package scaffold for `@canvas/core` in `packages/core/package.json` and `packages/core/tsconfig.json`
-- [ ] T005 [P] Initialize package scaffold for `@canvas/map-engine` in `packages/map-engine/package.json` and `packages/map-engine/tsconfig.json`
-- [ ] T006 [P] Initialize application scaffold for `@canvas/web` with Vite and React in `apps/web/package.json`, `apps/web/vite.config.ts`, and `apps/web/index.html`
+- [X] T001 Initialize npm monorepo root with workspaces configuration in `package.json`
+- [X] T002 [P] Configure TypeScript root configuration and base compiler settings in `tsconfig.base.json`
+- [X] T003 [P] Configure shared linting and formatting rules in `.prettierrc` and `eslint.config.js`
+- [X] T004 [P] Initialize package scaffold for `@canvas/core` in `packages/core/package.json` and `packages/core/tsconfig.json`
+- [X] T005 [P] Initialize package scaffold for `@canvas/map-engine` in `packages/map-engine/package.json` and `packages/map-engine/tsconfig.json`
+- [X] T006 [P] Initialize application scaffold for `@canvas/web` with Vite and React in `apps/web/package.json`, `apps/web/vite.config.ts`, and `apps/web/index.html`
 
 ---
 
@@ -25,11 +25,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T007 Implement typed error hierarchy (`CanvasError`, `LayerNotFoundError`, `InvalidLayerCountError`, `InvalidCoordinatesError`, `SchemaValidationError`, `LayerLockedError`) in `packages/core/src/errors/index.ts`
-- [ ] T008 [P] Implement EventBroker and base event interfaces in `packages/core/src/events/event-broker.ts` per `contracts/event-broker-contract.md`
-- [ ] T009 [P] Implement Zod schemas and TypeScript types for `BaseMapConfig` (with constraints: `lon [-180.0, 180.0]`, `lat [-90.0, 90.0]`, `zoom [0.0, 24.0]`, `pitch [0.0, 85.0]`, `bearing [0.0, 360.0)`) and `SpatialEntity` in `packages/core/src/schemas/basemap.ts` and `packages/core/src/schemas/entity.ts`
-- [ ] T010 [P] Implement Zod schemas and TypeScript types for `SemanticLayer` (with constraints: `name 1-100 characters trimmed non-empty`, `semanticType enum: baseline, tactical, infrastructure, environmental, annotation, custom`, `order >= 0`, `opacity [0.0, 1.0]`, `locked boolean`) and `CanvasWorkspace` (`schemaVersion: "1.0.0"`, `layers.length >= 1`) in `packages/core/src/schemas/layer.ts` and `packages/core/src/schemas/workspace.ts`
-- [ ] T011 Configure Vitest testing environment and test setup in `packages/core/vitest.config.ts`
+- [X] T007 Implement typed error hierarchy (`CanvasError`, `LayerNotFoundError`, `InvalidLayerCountError`, `InvalidCoordinatesError`, `SchemaValidationError`, `LayerLockedError`) in `packages/core/src/errors/index.ts`
+- [X] T008 [P] Implement EventBroker and base event interfaces in `packages/core/src/events/event-broker.ts` per `contracts/event-broker-contract.md`
+- [X] T009 [P] Implement Zod schemas and TypeScript types for `BaseMapConfig` (with constraints: `lon [-180.0, 180.0]`, `lat [-90.0, 90.0]`, `zoom [0.0, 24.0]`, `pitch [0.0, 85.0]`, `bearing [0.0, 360.0)`) and `SpatialEntity` in `packages/core/src/schemas/basemap.ts` and `packages/core/src/schemas/entity.ts`
+- [X] T010 [P] Implement Zod schemas and TypeScript types for `SemanticLayer` (with constraints: `name 1-100 characters trimmed non-empty`, `semanticType enum: baseline, tactical, infrastructure, environmental, annotation, custom`, `order >= 0`, `opacity [0.0, 1.0]`, `locked boolean`) and `CanvasWorkspace` (`schemaVersion: "1.0.0"`, `layers.length >= 1`) in `packages/core/src/schemas/layer.ts` and `packages/core/src/schemas/workspace.ts`
+- [X] T011 Configure Vitest testing environment and test setup in `packages/core/vitest.config.ts`
 
 **Checkpoint**: Foundation ready — user story implementation can now begin.
 
@@ -43,17 +43,17 @@
 
 ### Tests for User Story 1 (TDD Mandatory per Constitution Principle IV) 🧪
 
-- [ ] T012 [P] [US1] Unit test for `BaseMapConfig` coordinate validation and default viewport generation in `packages/core/tests/unit/basemap.test.ts`
-- [ ] T013 [P] [US1] Contract test for base map configuration against schema in `packages/core/tests/contract/basemap-contract.test.ts`
+- [X] T012 [P] [US1] Unit test for `BaseMapConfig` coordinate validation and default viewport generation in `packages/core/tests/unit/basemap.test.ts`
+- [X] T013 [P] [US1] Contract test for base map configuration against schema in `packages/core/tests/contract/basemap-contract.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Implement BaseMap state model and default config generator in `packages/core/src/models/basemap.ts`
-- [ ] T015 [US1] Implement `MapLibreMapAdapter` wrapping MapLibre GL JS map instance with pan/zoom/bearing/pitch controls in `packages/map-engine/src/adapters/maplibre-adapter.ts`
-- [ ] T016 [US1] Implement `ViewportController` to manage viewport state and coordinate conversion in `packages/map-engine/src/controllers/viewport-controller.ts`
-- [ ] T017 [US1] Implement `useBaseMap` React hook connecting UI state to map engine in `apps/web/src/hooks/useBaseMap.ts`
-- [ ] T018 [US1] Implement `MapCanvas` interactive WebGL container component with zoom/pan controls in `apps/web/src/components/canvas/MapCanvas.tsx`
-- [ ] T019 [US1] Integrate MapCanvas into primary application layout in `apps/web/src/App.tsx`
+- [X] T014 [US1] Implement BaseMap state model and default config generator in `packages/core/src/models/basemap.ts`
+- [X] T015 [US1] Implement `MapLibreMapAdapter` wrapping MapLibre GL JS map instance with pan/zoom/bearing/pitch controls in `packages/map-engine/src/adapters/maplibre-adapter.ts`
+- [X] T016 [US1] Implement `ViewportController` to manage viewport state and coordinate conversion in `packages/map-engine/src/controllers/viewport-controller.ts`
+- [X] T017 [US1] Implement `useBaseMap` React hook connecting UI state to map engine in `apps/web/src/hooks/useBaseMap.ts`
+- [X] T018 [US1] Implement `MapCanvas` interactive WebGL container component with zoom/pan controls in `apps/web/src/components/canvas/MapCanvas.tsx`
+- [X] T019 [US1] Integrate MapCanvas into primary application layout in `apps/web/src/App.tsx`
 
 **Checkpoint**: At this point, User Story 1 is fully functional as a standalone MVP and can be demonstrated independently.
 
@@ -67,17 +67,17 @@
 
 ### Tests for User Story 2 (TDD Mandatory per Constitution Principle IV) 🧪
 
-- [ ] T020 [P] [US2] Unit tests for `LayerManager` (layer creation, layer isolation, reordering, visibility toggle, opacity clamping [0.0, 1.0], lock toggle, minimum 1 layer constraint `FR-012`, prevent last layer deletion) in `packages/core/tests/unit/layer-manager.test.ts`
-- [ ] T021 [P] [US2] Unit tests for EventBroker emission timing and event payload validation (`layer:created`, `layer:reordered`, `layer:visibility-changed`, `layer:opacity-changed`, `layer:lock-changed`, `layer:deleted`) in `packages/core/tests/unit/layer-events.test.ts`
+- [X] T020 [P] [US2] Unit tests for `LayerManager` (layer creation, layer isolation, reordering, visibility toggle, opacity clamping [0.0, 1.0], lock toggle, minimum 1 layer constraint `FR-012`, prevent last layer deletion) in `packages/core/tests/unit/layer-manager.test.ts`
+- [X] T021 [P] [US2] Unit tests for EventBroker emission timing and event payload validation (`layer:created`, `layer:reordered`, `layer:visibility-changed`, `layer:opacity-changed`, `layer:lock-changed`, `layer:deleted`) in `packages/core/tests/unit/layer-events.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T022 [US2] Implement `LayerManager` fulfilling `ILayerManager` interface in `packages/core/src/services/layer-manager.ts`
-- [ ] T023 [US2] Implement `LayerSyncEngine` in `packages/map-engine/src/sync/layer-sync-engine.ts` to synchronize layer order, visibility, and opacity to MapLibre styles in < 50ms (`SC-002`)
-- [ ] T024 [US2] Implement `useLayerManager` React hook binding layer state and actions in `apps/web/src/hooks/useLayerManager.ts`
-- [ ] T025 [P] [US2] Implement `LayerItem` component with name, semantic badge, visibility toggle eye, lock toggle, and opacity slider in `apps/web/src/components/layers/LayerItem.tsx`
-- [ ] T026 [US2] Implement `LayerDock` panel with layer creation modal, active layer selection, drag-and-drop reordering, and layer deletion in `apps/web/src/components/layers/LayerDock.tsx`
-- [ ] T027 [US2] Integrate `LayerDock` into main UI sidebar in `apps/web/src/App.tsx`
+- [X] T022 [US2] Implement `LayerManager` fulfilling `ILayerManager` interface in `packages/core/src/services/layer-manager.ts`
+- [X] T023 [US2] Implement `LayerSyncEngine` in `packages/map-engine/src/sync/layer-sync-engine.ts` to synchronize layer order, visibility, and opacity to MapLibre styles in < 50ms (`SC-002`)
+- [X] T024 [US2] Implement `useLayerManager` React hook binding layer state and actions in `apps/web/src/hooks/useLayerManager.ts`
+- [X] T025 [P] [US2] Implement `LayerItem` component with name, semantic badge, visibility toggle eye, lock toggle, and opacity slider in `apps/web/src/components/layers/LayerItem.tsx`
+- [X] T026 [US2] Implement `LayerDock` panel with layer creation modal, active layer selection, drag-and-drop reordering, and layer deletion in `apps/web/src/components/layers/LayerDock.tsx`
+- [X] T027 [US2] Integrate `LayerDock` into main UI sidebar in `apps/web/src/App.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 work together seamlessly and remain independently testable.
 
@@ -91,15 +91,15 @@
 
 ### Tests for User Story 3 (TDD Mandatory per Constitution Principle IV) 🧪
 
-- [ ] T028 [P] [US3] Contract tests verifying workspace serialization matches `workspace-schema.json` draft-2020-12 schema in `packages/core/tests/contract/workspace-serialization.test.ts`
-- [ ] T029 [P] [US3] Unit tests for workspace deserialization, rejection of malformed or out-of-bounds coordinates, and version checking in `packages/core/tests/unit/workspace-deserializer.test.ts`
+- [X] T028 [P] [US3] Contract tests verifying workspace serialization matches `workspace-schema.json` draft-2020-12 schema in `packages/core/tests/contract/workspace-serialization.test.ts`
+- [X] T029 [P] [US3] Unit tests for workspace deserialization, rejection of malformed or out-of-bounds coordinates, and version checking in `packages/core/tests/unit/workspace-deserializer.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T030 [US3] Implement workspace serialization and deserialization functions with Zod validation in `packages/core/src/services/workspace-serializer.ts`
-- [ ] T031 [US3] Integrate `serialize()` and `deserialize()` into `LayerManager` in `packages/core/src/services/layer-manager.ts`
-- [ ] T032 [US3] Implement `WorkspaceMenu` component with "New Workspace", "Export Workspace (.canvas.json)", and "Import Workspace" file dialog in `apps/web/src/components/menu/WorkspaceMenu.tsx`
-- [ ] T033 [US3] Connect `WorkspaceMenu` to `LayerManager` and persist workspace state to browser localStorage cache in `apps/web/src/hooks/useWorkspacePersistence.ts`
+- [X] T030 [US3] Implement workspace serialization and deserialization functions with Zod validation in `packages/core/src/services/workspace-serializer.ts`
+- [X] T031 [US3] Integrate `serialize()` and `deserialize()` into `LayerManager` in `packages/core/src/services/layer-manager.ts`
+- [X] T032 [US3] Implement `WorkspaceMenu` component with "New Workspace", "Export Workspace (.canvas.json)", and "Import Workspace" file dialog in `apps/web/src/components/menu/WorkspaceMenu.tsx`
+- [X] T033 [US3] Connect `WorkspaceMenu` to `LayerManager` and persist workspace state to browser localStorage cache in `apps/web/src/hooks/useWorkspacePersistence.ts`
 
 **Checkpoint**: All three user stories are now complete, offering full base map navigation, multi-layer management, and persistent workspace storage.
 
@@ -109,10 +109,10 @@
 
 **Purpose**: System integration, end-to-end verification, performance validation, and documentation
 
-- [ ] T034 [P] Implement Playwright end-to-end integration test validating base map load (< 2s, `SC-001`), layer creation, reordering (< 50ms, `SC-002`), and workspace export/import (`SC-004`) in `apps/web/tests/e2e/layers.spec.ts`
-- [ ] T035 [P] Implement performance benchmark script measuring frame rate (60 FPS, `SC-003`) with 20 layers and 1,000 spatial entities in `packages/map-engine/tests/perf/render-benchmark.test.ts`
-- [ ] T036 Run complete quickstart validation scenarios from `specs/001-base-map-layers/quickstart.md` and verify all tests pass
-- [ ] T037 [P] Create developer and API documentation in `packages/core/README.md` and `packages/map-engine/README.md`
+- [X] T034 [P] Implement Playwright end-to-end integration test validating base map load (< 2s, `SC-001`), layer creation, reordering (< 50ms, `SC-002`), and workspace export/import (`SC-004`) in `apps/web/tests/e2e/layers.spec.ts`
+- [X] T035 [P] Implement performance benchmark script measuring frame rate (60 FPS, `SC-003`) with 20 layers and 1,000 spatial entities in `packages/map-engine/tests/perf/render-benchmark.test.ts`
+- [X] T036 Run complete quickstart validation scenarios from `specs/001-base-map-layers/quickstart.md` and verify all tests pass
+- [X] T037 [P] Create developer and API documentation in `packages/core/README.md` and `packages/map-engine/README.md`
 
 ---
 
