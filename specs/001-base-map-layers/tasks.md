@@ -2,7 +2,7 @@
 
 **Feature**: `001-base-map-layers`  
 **Input**: [spec.md](./spec.md), [plan.md](./plan.md), [data-model.md](./data-model.md), [contracts/](./contracts/), [quickstart.md](./quickstart.md)  
-**Status**: Ready for Implementation  
+**Status**: Completed  
 
 ---
 
