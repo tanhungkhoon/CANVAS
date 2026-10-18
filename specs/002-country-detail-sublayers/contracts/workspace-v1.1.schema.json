@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://canvas.app/schemas/workspace/v1.1.0",
+  "title": "CanvasWorkspace v1.1.0",
+  "description": "CANVAS serialized workspace document schema — version 1.1.0 adds CountryDetailConfig",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "workspaceId",
+    "title",
+    "baseMap",
+    "layers",
+    "activeLayerId",
+    "countryDetailConfig",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.1.0",
+      "description": "Schema version identifier. Previous version was 1.0.0 — see migration notes."
+    },
+    "workspaceId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Stable UUID for this workspace document"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable workspace title"
+    },
+    "baseMap": {
+      "$ref": "#/$defs/BaseMapConfig"
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of user-created semantic layers. Must contain at least one layer.",
+      "items": { "$ref": "#/$defs/SemanticLayer" }
+    },
+    "activeLayerId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the currently active semantic layer. Must reference an existing layer in layers[]."
+    },
+    "countryDetailConfig": {
+      "$ref": "country-detail-config.schema.json",
+      "description": "Country detail sublayer configuration (NEW in v1.1.0). Default: empty definitions and overrides."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "BaseMapConfig": {
+      "type": "object",
+      "required": ["styleUrl", "center", "zoom"],
+      "properties": {
+        "styleUrl": { "type": "string", "minLength": 1 },
+        "center": {
+          "type": "array",
+          "items": [
+            { "type": "number", "minimum": -180, "maximum": 180 },
+            { "type": "number", "minimum": -90, "maximum": 90 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "zoom": { "type": "number", "minimum": 0, "maximum": 24 },
+        "bearing": { "type": "number", "minimum": 0, "maximum": 360, "default": 0 },
+        "pitch": { "type": "number", "minimum": 0, "maximum": 85, "default": 0 }
+      }
+    },
+    "SemanticLayer": {
+      "type": "object",
+      "description": "Existing SemanticLayer shape — unchanged from v1.0.0. See packages/core/src/schemas/layer.ts.",
+      "required": ["id", "name", "semanticType", "order", "visible", "opacity", "locked", "entities", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "semanticType": { "type": "string", "enum": ["baseline", "tactical", "infrastructure", "environmental", "annotation", "custom"] },
+        "order": { "type": "integer", "minimum": 0 },
+        "visible": { "type": "boolean", "default": true },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1, "default": 1 },
+        "locked": { "type": "boolean", "default": false },
+        "entities": { "type": "array", "default": [] },
+        "metadata": { "type": "object", "default": {} },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "x-migration": {
+    "from": "1.0.0",
+    "to": "1.1.0",
+    "strategy": "additive",
+    "steps": [
+      "Detect schemaVersion === '1.0.0' in deserializeWorkspace before Zod parse",
+      "Inject countryDetailConfig: { definitions: [], sublayerVisibilityOverrides: {} }",
+      "Set schemaVersion to '1.1.0'",
+      "Proceed with normal Zod validation against v1.1.0 schema"
+    ]
+  }
+}

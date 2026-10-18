@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://canvas.app/schemas/country-detail-config/v1.0.0",
+  "title": "CountryDetailConfig",
+  "description": "Top-level country detail sublayer configuration embedded in CanvasWorkspace v1.1.0",
+  "type": "object",
+  "required": ["definitions", "sublayerVisibilityOverrides"],
+  "additionalProperties": false,
+  "properties": {
+    "definitions": {
+      "type": "array",
+      "description": "All registered CountrySublayerDefinition records",
+      "items": { "$ref": "#/$defs/CountrySublayerDefinition" },
+      "default": []
+    },
+    "sublayerVisibilityOverrides": {
+      "type": "object",
+      "description": "Map of CountrySublayerDefinition.id → user-explicit visibility override. Absent key = auto (zoom-controlled). false = user-hidden. true = user has explicitly shown (no effect if not auto-active).",
+      "additionalProperties": { "type": "boolean" },
+      "default": {}
+    }
+  },
+  "$defs": {
+    "CountrySublayerDefinition": {
+      "title": "CountrySublayerDefinition",
+      "description": "A single registered country detail sublayer configuration record",
+      "type": "object",
+      "required": [
+        "id",
+        "countryCode",
+        "name",
+        "detailCategory",
+        "minZoomThreshold",
+        "tileSourceUrl",
+        "enabled",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Stable UUID identifier for this definition"
+        },
+        "countryCode": {
+          "type": "string",
+          "pattern": "^[A-Z]{2,3}$",
+          "description": "ISO 3166-1 alpha-2 (e.g. 'MY') or alpha-3 (e.g. 'MYS') country code"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Human-readable sublayer label displayed in the layer dock"
+        },
+        "detailCategory": {
+          "type": "string",
+          "enum": ["administrative", "transport", "terrain", "urban", "hydrography", "custom"],
+          "description": "The type of geographic detail this sublayer represents"
+        },
+        "minZoomThreshold": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 24.0,
+          "description": "MapLibre zoom level at or above which this sublayer auto-activates"
+        },
+        "tileSourceUrl": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Vector or raster tile source URL template ({z}/{x}/{y}) or TileJSON endpoint URL"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "When false, this definition is globally disabled and will never activate"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 last-modification timestamp"
+        }
+      }
+    }
+  }
+}
