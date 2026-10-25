@@ -2,17 +2,20 @@ import React from 'react';
 import { useBaseMap } from '../../hooks/useBaseMap.js';
 
 interface MapCanvasProps {
-  onMapReady?: (adapter: ReturnType<typeof useBaseMap>['adapter']) => void;
+  onMapReady?: (
+    adapter: ReturnType<typeof useBaseMap>['adapter'],
+    controller?: ReturnType<typeof useBaseMap>['controller']
+  ) => void;
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({ onMapReady }) => {
-  const { containerRef, isReady, viewport, resetViewport, adapter } = useBaseMap();
+  const { containerRef, isReady, viewport, resetViewport, adapter, controller } = useBaseMap();
 
   React.useEffect(() => {
     if (isReady && adapter && onMapReady) {
-      onMapReady(adapter);
+      onMapReady(adapter, controller);
     }
-  }, [isReady, adapter, onMapReady]);
+  }, [isReady, adapter, controller, onMapReady]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>

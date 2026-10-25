@@ -1,14 +1,17 @@
 import React, { useRef, useState } from 'react';
-import type { LayerManager } from '@canvas/core';
+import type { LayerManager, ICountryDetailManager } from '@canvas/core';
+import { serializeWorkspace } from '@canvas/core';
 
 interface WorkspaceMenuProps {
   manager: LayerManager;
+  countryDetailManager?: ICountryDetailManager;
   onImportSuccess?: () => void;
   onImportError?: (error: string) => void;
 }
 
 export const WorkspaceMenu: React.FC<WorkspaceMenuProps> = ({
   manager,
+  countryDetailManager,
   onImportSuccess,
   onImportError,
 }) => {
@@ -17,11 +20,15 @@ export const WorkspaceMenu: React.FC<WorkspaceMenuProps> = ({
 
   const handleExport = () => {
     try {
-      const json = manager.serialize();
+      const ws = manager.getWorkspace();
+      if (countryDetailManager) {
+        ws.countryDetailConfig = countryDetailManager.exportConfig();
+      }
+      const json = serializeWorkspace(ws);
       const blob = new Blob([json], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const filename = `${manager.getWorkspace().title.toLowerCase().replace(/\s+/g, '-')}.canvas.json`;
+      const filename = `${ws.title.toLowerCase().replace(/\s+/g, '-')}.canvas.json`;
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
@@ -44,6 +51,9 @@ export const WorkspaceMenu: React.FC<WorkspaceMenuProps> = ({
       try {
         const content = event.target?.result as string;
         manager.deserialize(content);
+        if (countryDetailManager) {
+          countryDetailManager.loadConfig(manager.getWorkspace().countryDetailConfig);
+        }
         setErrorMessage(null);
         if (onImportSuccess) onImportSuccess();
       } catch (err) {
@@ -62,6 +72,9 @@ export const WorkspaceMenu: React.FC<WorkspaceMenuProps> = ({
   const handleNewWorkspace = () => {
     if (window.confirm('Start a new workspace? Any unsaved changes will be cleared.')) {
       manager.reset();
+      if (countryDetailManager) {
+        countryDetailManager.loadConfig({ definitions: [], sublayerVisibilityOverrides: {} });
+      }
       setErrorMessage(null);
       if (onImportSuccess) onImportSuccess();
     }

@@ -15,6 +15,12 @@ export class LayerNotFoundError extends CanvasError {
   }
 }
 
+export class DefinitionNotFoundError extends CanvasError {
+  constructor(definitionId: string) {
+    super(`Country sublayer definition with ID "${definitionId}" not found.`, 'DEFINITION_NOT_FOUND');
+  }
+}
+
 export class InvalidLayerCountError extends CanvasError {
   constructor(message: string = 'A canvas workspace must maintain at least one layer.') {
     super(message, 'INVALID_LAYER_COUNT');

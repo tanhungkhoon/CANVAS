@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import type { SemanticCategory, SemanticLayer } from '@canvas/core';
+import type { SemanticCategory, SemanticLayer, CountrySublayerDefinition } from '@canvas/core';
 import { LayerItem } from './LayerItem.js';
+import { CountrySublayerItem } from './CountrySublayerItem.js';
 
 interface LayerDockProps {
   layers: readonly SemanticLayer[];
   activeLayer: SemanticLayer;
+  activeSublayers?: CountrySublayerDefinition[];
+  sublayerVisibilityOverrides?: Record<string, boolean>;
   onCreateLayer: (name: string, category: SemanticCategory) => void;
   onDeleteLayer: (id: string) => void;
   onSelectLayer: (id: string) => void;
   onToggleVisibility: (id: string, visible: boolean) => void;
+  onToggleSublayerVisibility?: (definitionId: string, visible: boolean) => void;
   onToggleLock: (id: string, locked: boolean) => void;
   onChangeOpacity: (id: string, opacity: number) => void;
   onReorderLayers: (orderedIds: string[]) => void;
@@ -17,10 +21,13 @@ interface LayerDockProps {
 export const LayerDock: React.FC<LayerDockProps> = ({
   layers,
   activeLayer,
+  activeSublayers = [],
+  sublayerVisibilityOverrides = {},
   onCreateLayer,
   onDeleteLayer,
   onSelectLayer,
   onToggleVisibility,
+  onToggleSublayerVisibility,
   onToggleLock,
   onChangeOpacity,
   onReorderLayers,
@@ -209,6 +216,59 @@ export const LayerDock: React.FC<LayerDockProps> = ({
             onMoveDown={index < layers.length - 1 ? () => handleMove(index, 'down') : undefined}
           />
         ))}
+
+        {/* Map Detail Sublayers Group */}
+        {activeSublayers.length > 0 && (
+          <div
+            data-testid="sublayer-group-section"
+            style={{
+              marginTop: '16px',
+              paddingTop: '16px',
+              borderTop: '1px solid #2d3748',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '8px',
+                padding: '0 4px',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  color: '#63b3ed',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Map Detail Layers
+              </span>
+              <span
+                style={{
+                  fontSize: '10px',
+                  color: '#718096',
+                }}
+              >
+                Auto-active
+              </span>
+            </div>
+
+            {activeSublayers.map((sublayer) => (
+              <CountrySublayerItem
+                key={sublayer.id}
+                definition={sublayer}
+                isVisible={sublayerVisibilityOverrides[sublayer.id] !== false}
+                onToggleVisibility={(visible) =>
+                  onToggleSublayerVisibility?.(sublayer.id, visible)
+                }
+              />
+            ))}
+          </div>
+        )}
       </div>
     </aside>
   );

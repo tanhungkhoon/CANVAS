@@ -8,7 +8,7 @@ describe('Workspace Serialization Contract Tests', () => {
     const json = serializeWorkspace(manager.getWorkspace());
 
     const parsed = JSON.parse(json);
-    expect(parsed.schemaVersion).toBe('1.0.0');
+    expect(parsed.schemaVersion).toBe('1.1.0');
     expect(parsed.workspaceId).toBeDefined();
     expect(parsed.title).toBe('Test Project');
     expect(parsed.baseMap).toBeDefined();

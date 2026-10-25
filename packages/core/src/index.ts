@@ -7,3 +7,12 @@ export * from './schemas/workspace.js';
 export * from './models/basemap.js';
 export * from './services/layer-manager.js';
 export * from './services/workspace-serializer.js';
+
+/** @since 1.1.0 */
+export * from './schemas/country-sublayer.js';
+
+/** @since 1.1.0 */
+export * from './services/country-detail-manager.js';
+
+/** @since 1.1.0 */
+export * from './utils/geo-utils.js';

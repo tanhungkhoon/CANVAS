@@ -33,10 +33,10 @@ export interface ILayerManager {
 
 export class LayerManager implements ILayerManager {
   private workspace: CanvasWorkspace;
-  private eventBroker: EventBroker;
+  private eventBroker: EventBroker<LayerEvent>;
 
   constructor(initialTitle: string = 'Untitled Canvas') {
-    this.eventBroker = new EventBroker();
+    this.eventBroker = new EventBroker<LayerEvent>();
     const defaultLayerId = crypto.randomUUID();
     const now = new Date().toISOString();
 
@@ -55,12 +55,16 @@ export class LayerManager implements ILayerManager {
     };
 
     this.workspace = {
-      schemaVersion: '1.0.0',
+      schemaVersion: '1.1.0',
       workspaceId: crypto.randomUUID(),
       title: initialTitle,
       baseMap: { ...DEFAULT_BASEMAP_CONFIG },
       layers: [defaultLayer],
       activeLayerId: defaultLayerId,
+      countryDetailConfig: {
+        definitions: [],
+        sublayerVisibilityOverrides: {},
+      },
       createdAt: now,
       updatedAt: now,
     };
@@ -353,12 +357,16 @@ export class LayerManager implements ILayerManager {
     };
 
     this.workspace = {
-      schemaVersion: '1.0.0',
+      schemaVersion: '1.1.0',
       workspaceId: crypto.randomUUID(),
       title,
       baseMap: { ...DEFAULT_BASEMAP_CONFIG },
       layers: [defaultLayer],
       activeLayerId: defaultLayerId,
+      countryDetailConfig: {
+        definitions: [],
+        sublayerVisibilityOverrides: {},
+      },
       createdAt: now,
       updatedAt: now,
     };

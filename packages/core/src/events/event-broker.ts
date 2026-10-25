@@ -1,6 +1,7 @@
 import type { BaseMapConfig } from '../schemas/basemap.js';
 import type { SemanticLayer } from '../schemas/layer.js';
 import type { CanvasWorkspace } from '../schemas/workspace.js';
+import type { CountryDetailConfig } from '../schemas/country-sublayer.js';
 
 export type LayerEventType =
   | 'layer:created'
@@ -93,19 +94,65 @@ export type LayerEvent =
   | WorkspaceLoadedEvent
   | WorkspaceResetEvent;
 
-export type EventListener = (event: LayerEvent) => void;
+// ─── Sublayer Events ─────────────────────────────────────────────────────────
 
-export class EventBroker {
-  private listeners: Set<EventListener> = new Set();
+export type SublayerEventType =
+  | 'sublayer:activated'
+  | 'sublayer:deactivated'
+  | 'sublayer:visibility-override-changed'
+  | 'sublayer:config-updated';
 
-  public subscribe(listener: EventListener): () => void {
+export interface BaseSublayerEvent {
+  type: SublayerEventType;
+  timestamp: string;
+  workspaceId: string;
+}
+
+export interface SublayerActivatedEvent extends BaseSublayerEvent {
+  type: 'sublayer:activated';
+  definitionIds: string[];
+  countryCode: string;
+}
+
+export interface SublayerDeactivatedEvent extends BaseSublayerEvent {
+  type: 'sublayer:deactivated';
+  definitionIds: string[];
+}
+
+export interface SublayerVisibilityOverrideChangedEvent extends BaseSublayerEvent {
+  type: 'sublayer:visibility-override-changed';
+  definitionId: string;
+  visible: boolean;
+}
+
+export interface SublayerConfigUpdatedEvent extends BaseSublayerEvent {
+  type: 'sublayer:config-updated';
+  config: CountryDetailConfig;
+}
+
+export type SublayerEvent =
+  | SublayerActivatedEvent
+  | SublayerDeactivatedEvent
+  | SublayerVisibilityOverrideChangedEvent
+  | SublayerConfigUpdatedEvent;
+
+export type SublayerEventListener = (event: SublayerEvent) => void;
+
+export type CanvasEvent = LayerEvent | SublayerEvent;
+export type LayerEventListener = (event: LayerEvent) => void;
+export type EventListener = LayerEventListener;
+
+export class EventBroker<T extends { type: string } = CanvasEvent> {
+  private listeners: Set<(event: T) => void> = new Set();
+
+  public subscribe(listener: (event: T) => void): () => void {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
     };
   }
 
-  public emit(event: LayerEvent): void {
+  public emit(event: T): void {
     for (const listener of this.listeners) {
       try {
         listener(event);

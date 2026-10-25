@@ -4,10 +4,16 @@ import { LayerDock } from './components/layers/LayerDock.js';
 import { WorkspaceMenu } from './components/menu/WorkspaceMenu.js';
 import { useLayerManager } from './hooks/useLayerManager.js';
 import { useWorkspacePersistence } from './hooks/useWorkspacePersistence.js';
-import { LayerSyncEngine } from '@canvas/map-engine';
-import type { MapLibreMapAdapter } from '@canvas/map-engine';
+import { LayerSyncEngine, CountryDetailSyncEngine } from '@canvas/map-engine';
+import type { MapLibreMapAdapter, ViewportController } from '@canvas/map-engine';
+import { useCountryDetailManager } from './hooks/useCountryDetailManager.js';
+import { useViewportSync } from './hooks/useViewportSync.js';
+
+import { CountrySublayerManager } from './components/layers/CountrySublayerManager.js';
 
 export const App: React.FC = () => {
+  const [isSublayerManagerOpen, setIsSublayerManagerOpen] = useState(false);
+
   const {
     manager,
     layers,
@@ -21,11 +27,28 @@ export const App: React.FC = () => {
     setLayerLocked,
   } = useLayerManager();
 
-  // Enable localStorage caching
-  useWorkspacePersistence(manager);
+  const {
+    manager: countryDetailManager,
+    config,
+    activeDefinitions,
+    visibleDefinitions,
+    sublayerVisibilityOverrides,
+    addDefinition,
+    removeDefinition,
+    setVisibilityOverride,
+  } = useCountryDetailManager();
+
+  // Enable localStorage caching with sublayer config persistence
+  useWorkspacePersistence(manager, countryDetailManager);
 
   const [mapAdapter, setMapAdapter] = useState<MapLibreMapAdapter | null>(null);
+  const [viewportController, setViewportController] = useState<ViewportController | null>(null);
+
   const syncEngineRef = useRef<LayerSyncEngine | null>(null);
+  const countryDetailSyncEngineRef = useRef<CountryDetailSyncEngine | null>(null);
+
+  // Sync viewport movements to country detail manager
+  useViewportSync(viewportController, countryDetailManager);
 
   useEffect(() => {
     if (!mapAdapter) return;
@@ -39,6 +62,24 @@ export const App: React.FC = () => {
       syncEngineRef.current = null;
     };
   }, [mapAdapter, manager]);
+
+  useEffect(() => {
+    if (!mapAdapter || !viewportController) return;
+
+    const countrySync = new CountryDetailSyncEngine(
+      mapAdapter,
+      viewportController,
+      countryDetailManager,
+      manager
+    );
+    countrySync.startSync();
+    countryDetailSyncEngineRef.current = countrySync;
+
+    return () => {
+      countrySync.stopSync();
+      countryDetailSyncEngineRef.current = null;
+    };
+  }, [mapAdapter, viewportController, countryDetailManager, manager]);
 
   return (
     <div
@@ -73,30 +114,65 @@ export const App: React.FC = () => {
           </span>
         </div>
 
-        {/* Workspace import/export actions */}
-        <WorkspaceMenu manager={manager} />
+        {/* Workspace and detail layers actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={() => setIsSublayerManagerOpen(true)}
+            data-testid="btn-manage-detail-layers"
+            style={{
+              backgroundColor: '#2d3748',
+              color: '#e2e8f0',
+              border: '1px solid #4a5568',
+              borderRadius: '4px',
+              padding: '4px 10px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              fontWeight: 500,
+            }}
+          >
+            Manage Detail Layers
+          </button>
+          <WorkspaceMenu manager={manager} countryDetailManager={countryDetailManager} />
+        </div>
       </header>
 
       {/* Main Workspace Body */}
       <div style={{ display: 'flex', flex: 1, position: 'relative', overflow: 'hidden' }}>
         {/* Map Viewport Area */}
         <main style={{ flex: 1, position: 'relative', height: '100%' }}>
-          <MapCanvas onMapReady={(adapter) => setMapAdapter(adapter)} />
+          <MapCanvas
+            onMapReady={(adapter, controller) => {
+              setMapAdapter(adapter);
+              if (controller) setViewportController(controller);
+            }}
+          />
         </main>
 
         {/* Right Sidebar Layer Dock */}
         <LayerDock
           layers={layers}
           activeLayer={activeLayer}
+          activeSublayers={activeDefinitions}
+          sublayerVisibilityOverrides={sublayerVisibilityOverrides}
           onCreateLayer={(name, category) => createLayer({ name, semanticType: category })}
           onDeleteLayer={(id) => deleteLayer(id)}
           onSelectLayer={(id) => setActiveLayer(id)}
           onToggleVisibility={(id, visible) => setLayerVisibility(id, visible)}
+          onToggleSublayerVisibility={(id, visible) => setVisibilityOverride(id, visible)}
           onToggleLock={(id, locked) => setLayerLocked(id, locked)}
           onChangeOpacity={(id, opacity) => setLayerOpacity(id, opacity)}
           onReorderLayers={(orderedIds) => reorderLayers(orderedIds)}
         />
       </div>
+
+      {isSublayerManagerOpen && (
+        <CountrySublayerManager
+          config={config}
+          onAddDefinition={addDefinition}
+          onRemoveDefinition={removeDefinition}
+          onClose={() => setIsSublayerManagerOpen(false)}
+        />
+      )}
     </div>
   );
 };

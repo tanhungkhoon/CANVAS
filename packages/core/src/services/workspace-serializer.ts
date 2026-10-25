@@ -19,6 +19,18 @@ export function deserializeWorkspace(jsonString: string): CanvasWorkspace {
     );
   }
 
+  // Migration from v1.0.0 to v1.1.0
+  if (parsed && typeof parsed === 'object' && (parsed as Record<string, unknown>).schemaVersion === '1.0.0') {
+    const raw = parsed as Record<string, unknown>;
+    raw.schemaVersion = '1.1.0';
+    if (!raw.countryDetailConfig) {
+      raw.countryDetailConfig = {
+        definitions: [],
+        sublayerVisibilityOverrides: {},
+      };
+    }
+  }
+
   const result = CanvasWorkspaceSchema.safeParse(parsed);
   if (!result.success) {
     throw new SchemaValidationError('Failed to validate workspace schema', result.error.issues);
